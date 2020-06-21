@@ -128,9 +128,7 @@ layout: default
         
         
     </div>
-    <div class='col-md-3 hidden-xs hidden-sm'>
-        <img class='img-responsive' src='images/usa.png' title='The United States of America'  alt='The United States of America' />
-    </div>
+  
 </div>
 
 <!-- Modal -->
@@ -154,13 +152,7 @@ layout: default
 <script id="tableGuts" type="text/EJS">
     <% $.each(people, function(i, info){ %>
         <tr>
-            <td>
-                <% if (info.person.photoUrl) { %>
-                    <img class="img-rounded headshot" src="<%= info.person.photoUrl %>" alt="<%= info.person.name %>" title="<%= info.person.name %>" />
-                <% } else { %>
-                    <img class="img-rounded headshot" src="/images/blank-person.jpg" alt="<%= info.person.name %>" title="<%= info.person.name %>" />
-                <% } %>
-            </td>
+          
             <td>
                 <%= info.person.name %> <%= formatParty(info.person.party) %>
                 <span class='visible-xs-block visible-sm-block'><%= info.office.name %></span>
@@ -227,11 +219,11 @@ layout: default
     
     <div class='row'>
         <div class='col-xs-4'>
-            <% if (info.person.photoUrl) { %>
+            <!-- <% if (info.person.photoUrl) { %>
                 <img class="img-rounded img-responsive" src="<%= info.person.photoUrl %>" alt="<%= info.person.name %>" title="<%= info.person.name %>" />
             <% } else { %>
                 <img class="img-rounded img-responsive" src="/images/blank-person.jpg" alt="<%= info.person.name %>" title="<%= info.person.name %>" />
-            <% } %>
+            <% } %> -->
             <br />
             <strong><%= info.person.name %> <%= formatParty(info.person.party) %></strong><br />
             <%= info.office.name %><br />
