@@ -39,22 +39,11 @@ function addressSearch() {
     var show_local   = false;
     var show_county  = false;
     var show_state   = false;
-    var show_federal = false;
+    var show_federal = true;
 
     var results_level_set = [];
     // set levels from checkboxes
-    if ($('#show_local_results').is(':checked')) {
-        show_local = true;
-        results_level_set.push('local');
-    }
-    if ($('#show_county_results').is(':checked')) {
-        show_county = true;
-        results_level_set.push('county');
-    }
-    if ($('#show_state_results').is(':checked')) {
-        show_state = true;
-        results_level_set.push('state');
-    }
+   
     if ($('#show_federal_results').is(':checked')) {
         show_federal = true;
         results_level_set.push('federal');
@@ -64,9 +53,6 @@ function addressSearch() {
 
     if (DEBUG) {
         console.log('doin search')
-        console.log('local: ' + show_local)
-        console.log('county: ' + show_county)
-        console.log('state: ' + show_state)
         console.log('federal: ' + show_federal)
     }
     var address = $('#address').val();
@@ -157,16 +143,16 @@ function addressSearch() {
                             if(checkFederal(division_id, office_name)) {
                                 info['jurisdiction'] = 'Federal Government';
                                 federal_people.push(info);
-                            } else if (checkState(division_id)) {
-                                info['jurisdiction'] = selected_state;
-                                state_people.push(info);
-                            } else if (checkCounty(division_id)){
-                                info['jurisdiction'] = selected_county;
-                                county_people.push(info);
-                            } else {
-                                info['jurisdiction'] = selected_local;
-                                local_people.push(info);
-                            }
+                            // } else if (checkState(division_id)) {
+                            //     info['jurisdiction'] = selected_state;
+                            //     state_people.push(info);
+                            // } else if (checkCounty(division_id)){
+                            //     info['jurisdiction'] = selected_county;
+                            //     county_people.push(info);
+                            // } else {
+                            //     info['jurisdiction'] = selected_local;
+                            //     local_people.push(info);
+                            // }
                             all_people[pseudo_id] = info;
                             pseudo_id = pseudo_id + 1;
 
@@ -187,53 +173,55 @@ function addressSearch() {
                 $('#fed-nav').hide();
             }
 
-            if (show_state) {
-                $('#state-container').show();
-                $('#state-nav').show();
-                if (state_people.length == 0)
-                    $('#state-container').hide();
-                $('#state-results tbody').append(template.render({people: state_people}));
-            } else {
-                $('#state-container').hide()
-                $('#state-nav').hide();
-            }                
+            
+            
+            // if (show_state) {
+            //     $('#state-container').show();
+            //     $('#state-nav').show();
+            //     if (state_people.length == 0)
+            //         $('#state-container').hide();
+            //     $('#state-results tbody').append(template.render({people: state_people}));
+            // } else {
+            //     $('#state-container').hide()
+            //     $('#state-nav').hide();
+            // }                
 
-            if (show_county) {
-                if (county_people.length == 0) {
-                    $('#county-container').hide();
-                    if (selected_county == '')
-                        $('#county-container-not-found').hide();
-                    else
-                        $('#county-container-not-found').show();
-                }
-                else {
-                    $('#county-container').show();
-                    $('#county-container-not-found').hide();
-                }
+            // if (show_county) {
+            //     if (county_people.length == 0) {
+            //         $('#county-container').hide();
+            //         if (selected_county == '')
+            //             $('#county-container-not-found').hide();
+            //         else
+            //             $('#county-container-not-found').show();
+            //     }
+            //     else {
+            //         $('#county-container').show();
+            //         $('#county-container-not-found').hide();
+            //     }
 
-                $('#county-results tbody').append(template.render({people: county_people}));
-            } else {
-                $('#county-container').hide()
-                $('#county-nav').hide();
-            }  
+            //     $('#county-results tbody').append(template.render({people: county_people}));
+            // } else {
+            //     $('#county-container').hide()
+            //     $('#county-nav').hide();
+            // }  
 
-            if (show_local) {    
-                if (local_people.length == 0) {
-                    $('#local-container').hide();
-                    if (selected_local == '')
-                        $('#local-container-not-found').hide();
-                    else
-                        $('#local-container-not-found').show();
-                }
-                else {
-                    $('#local-container').show();
-                    $('#local-container-not-found').hide();
-                }
-                $('#local-results tbody').append(template.render({people: local_people}));   
-            } else {
-                $('#local-container').hide()
-                $('#local-nav').hide();
-            }
+            // if (show_local) {    
+            //     if (local_people.length == 0) {
+            //         $('#local-container').hide();
+            //         if (selected_local == '')
+            //             $('#local-container-not-found').hide();
+            //         else
+            //             $('#local-container-not-found').show();
+            //     }
+            //     else {
+            //         $('#local-container').show();
+            //         $('#local-container-not-found').hide();
+            //     }
+            //     $('#local-results tbody').append(template.render({people: local_people}));   
+            // } else {
+            //     $('#local-container').hide()
+            //     $('#local-nav').hide();
+            // }
 
             $('#response-container').show();
             $("#no-response-container").hide();
@@ -251,39 +239,40 @@ function addressSearch() {
     });
 }
 
-function findMe() {
-    var foundLocation;
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            var accuracy = position.coords.accuracy;
-            var coords = new google.maps.LatLng(latitude, longitude);
 
-            if (DEBUG) console.log(coords);
+// function findMe() {
+//     var foundLocation;
+//     if (navigator.geolocation) {
+//         navigator.geolocation.getCurrentPosition(function (position) {
+//             var latitude = position.coords.latitude;
+//             var longitude = position.coords.longitude;
+//             var accuracy = position.coords.accuracy;
+//             var coords = new google.maps.LatLng(latitude, longitude);
 
-            geocoder.geocode({
-                'location': coords
-            }, function (results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    if (results[1]) {
-                        $("#address").val(results[1].formatted_address);
-                        addressSearch();
-                    }
-                }
-            });
+//             if (DEBUG) console.log(coords);
 
-        }, function error(msg) {
-            alert('Please enable your GPS position feature.');
-        }, {
-            //maximumAge: 600000,
-            //timeout: 5000,
-            enableHighAccuracy: true
-        });
-    } else {
-        alert("Geolocation API is not supported in your browser.");
-    }
-};
+//             geocoder.geocode({
+//                 'location': coords
+//             }, function (results, status) {
+//                 if (status === google.maps.GeocoderStatus.OK) {
+//                     if (results[1]) {
+//                         $("#address").val(results[1].formatted_address);
+//                         addressSearch();
+//                     }
+//                 }
+//             });
+
+//         }, function error(msg) {
+//             alert('Please enable your GPS position feature.');
+//         }, {
+//             //maximumAge: 600000,
+//             //timeout: 5000,
+//             enableHighAccuracy: true
+//         });
+//     } else {
+//         alert("Geolocation API is not supported in your browser.");
+//     }
+// };
 
 function setFoundDivisions(divisions){
     
@@ -321,38 +310,38 @@ function checkFederal(division_id, office_name) {
         return false; 
 }
 
-function checkState(division_id){
-    if( state_pattern.test(division_id) ||
-        sl_pattern.test(division_id))
-        return true;
-    else
-        return false; 
-}
+// // function checkState(division_id){
+//     if( state_pattern.test(division_id) ||
+//         sl_pattern.test(division_id))
+//         return true;
+//     else
+//         return false; 
+// }
 
-function checkCounty(division_id){
-    if( county_pattern.test(division_id))
-        return true;
-    else
-        return false; 
-}
+// function checkCounty(division_id){
+//     if( county_pattern.test(division_id))
+//         return true;
+//     else
+//         return false; 
+// }
 
-function formatParty(party) {
-    if (party) {
-        if (party == 'Unknown')
-            return '';
+// function formatParty(party) {
+//     if (party) {
+//         if (party == 'Unknown')
+//             return '';
 
-        var party_letter = party.charAt(0);
-        var css_class ='label-ind';
-        if (party_letter == 'D')
-            css_class ='label-dem';
-        else if (party_letter == 'R')
-            css_class ='label-rep';
+//         var party_letter = party.charAt(0);
+//         var css_class ='label-ind';
+//         if (party_letter == 'D')
+//             css_class ='label-dem';
+//         else if (party_letter == 'R')
+//             css_class ='label-rep';
 
-        return "(<span title='" + party + "' class='" + css_class + "'>" + party_letter + "</span>)";
-    }
-    else
-        return '';
-}
+//         return "(<span title='" + party + "' class='" + css_class + "'>" + party_letter + "</span>)";
+//     }
+//     else
+//         return '';
+// }
 
 function toTitleCase(str)
 {
